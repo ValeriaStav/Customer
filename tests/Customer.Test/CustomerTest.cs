@@ -1,28 +1,26 @@
 using System.Text;
+using Bogus;
 
 namespace Customer.Test
 {
     public class CustomerTest
     {
         [Fact]
-        public void SouldBeAbleToCreate()
+        public void ShouldBeAbleToCreate()
         {
             Customer customer = new Customer();
         }
 
         [Fact]
-        public void SouldBeAbleToValidate()
+        public void ShouldBeAbleToValidate()
         {
             Customer customer = new Customer();
             var validationResult = CustomerValidator.Validate(customer);
 
         }
 
-        private const string _longString =
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-
         [Fact]
-        public void SouldValidateFirstName()
+        public void ShouldValidateFirstName()
         {
             Customer customer = new Customer();
             customer.FirstName = "Name";
@@ -31,36 +29,62 @@ namespace Customer.Test
             string errorMessageForFirstName = "Invalid customer property: FirstName";
 
             Assert.NotEmpty(validationResult);
-            Assert.DoesNotContain<string>(errorMessageForFirstName,validationResult);
-
-            customer.FirstName = _longString;
-
-            validationResult = CustomerValidator.Validate(customer);
-
-            Assert.Contains(errorMessageForFirstName,validationResult);
+            Assert.DoesNotContain<string>(errorMessageForFirstName, validationResult);
         }
 
         [Fact]
-        public void SouldValidateLastName()
+        public void ShouldValidateNullFirstName()
         {
             Customer customer = new Customer();
-            customer.LastName = "Name";
+            customer.FirstName = null;
+
+            var validationResult = CustomerValidator.Validate(customer);
+            string errorMessageForFirstName = "Invalid customer property: FirstName";
+
+            Assert.NotEmpty(validationResult);
+            Assert.DoesNotContain<string>(errorMessageForFirstName, validationResult);
+        }
+
+        [Fact]
+        public void ShouldValidateWrongFirstName()
+        {
+            Customer customer = new Customer();
+            customer.FirstName = (new Faker()).Random.String(51);
+
+            var validationResult = CustomerValidator.Validate(customer);
+            string errorMessageForFirstName = "Invalid customer property: FirstName";
+
+            Assert.Contains(errorMessageForFirstName, validationResult);
+        }
+
+        [Fact]
+        public void ShouldValidateLastName()
+        {
+            Customer customer = new Customer();
+            customer.LastName = (new Faker()).Random.String(50);
 
             var validationResult = CustomerValidator.Validate(customer);
             string errorMessageForLastName = "Invalid customer property: LastName";
 
             Assert.NotEmpty(validationResult);
-            Assert.DoesNotContain<string>(errorMessageForLastName,validationResult);
-
-            customer.LastName = _longString;
-
-            validationResult = CustomerValidator.Validate(customer);
-
-            Assert.Contains(errorMessageForLastName,validationResult);
+            Assert.DoesNotContain<string>(errorMessageForLastName, validationResult);
         }
 
         [Fact]
-        public void SouldValidateAddresses()
+        public void ShouldValidateWrongLastName()
+        {
+            Customer customer = new Customer();
+            customer.LastName = (new Faker()).Random.String(51);
+
+            var validationResult = CustomerValidator.Validate(customer);
+            string errorMessageForLastName = "Invalid customer property: LastName";
+
+            Assert.Contains(errorMessageForLastName, validationResult);
+        }
+
+
+        [Fact]
+        public void ShouldValidateAddresses()
         {
             Customer customer = new Customer();
             customer.Addresses.Add(new Address());
@@ -69,18 +93,23 @@ namespace Customer.Test
             string errorMessageForAddresses = "Invalid customer property: Addresses";
 
             Assert.NotEmpty(validationResult);
-            Assert.DoesNotContain<string>(errorMessageForAddresses,validationResult);
-
-            customer.Addresses.Clear();
-
-            validationResult = CustomerValidator.Validate(customer);
-
-            Assert.Contains(errorMessageForAddresses,validationResult);
-
+            Assert.DoesNotContain<string>(errorMessageForAddresses, validationResult);
         }
 
         [Fact]
-        public void SouldValidateEmail()
+        public void ShouldValidateWrongAddresses()
+        {
+            Customer customer = new Customer();
+            customer.Addresses.Clear();
+
+            var validationResult = CustomerValidator.Validate(customer);
+            string errorMessageForAddresses = "Invalid customer property: Addresses";
+
+            Assert.Contains(errorMessageForAddresses, validationResult);
+        }
+
+        [Fact]
+        public void ShouldValidateEmail()
         {
             Customer customer = new Customer();
             customer.Email = "email@gmail.com";
@@ -89,17 +118,23 @@ namespace Customer.Test
             string errorMessageForEmail = "Invalid customer property: Email";
 
             Assert.NotEmpty(validationResult);
-            Assert.DoesNotContain<string>(errorMessageForEmail,validationResult);
-
-            customer.Email = "email@@gmail.com";
-
-            validationResult = CustomerValidator.Validate(customer);
-
-            Assert.Contains(errorMessageForEmail,validationResult);
+            Assert.DoesNotContain<string>(errorMessageForEmail, validationResult);
         }
 
         [Fact]
-        public void SouldValidateNotes()
+        public void ShouldValidateWrongEmail()
+        {
+            Customer customer = new Customer();
+            customer.Email = "email@@gmail.com";
+
+            var validationResult = CustomerValidator.Validate(customer);
+            string errorMessageForEmail = "Invalid customer property: Email";
+
+            Assert.Contains(errorMessageForEmail, validationResult);
+        }
+
+        [Fact]
+        public void ShouldValidateNotes()
         {
             Customer customer = new Customer();
             customer.Notes.Add("new note");
@@ -108,55 +143,73 @@ namespace Customer.Test
             string errorMessageForNotes = "Invalid customer property: Notes";
 
             Assert.NotEmpty(validationResult);
-            Assert.DoesNotContain<string>(errorMessageForNotes,validationResult);
-            
-            customer.Notes.Clear();
-
-            validationResult = CustomerValidator.Validate(customer);
-
-            Assert.Contains(errorMessageForNotes,validationResult);
+            Assert.DoesNotContain<string>(errorMessageForNotes, validationResult);
         }
 
         [Fact]
-        public void SouldValidatePhoneNumber()
+        public void ShouldValidateWrongNotes()
         {
             Customer customer = new Customer();
-            customer.PhoneNumber="123456789111";
+            customer.Notes.Clear();
+
+            var validationResult = CustomerValidator.Validate(customer);
+            string errorMessageForNotes = "Invalid customer property: Notes";
+
+            Assert.Contains(errorMessageForNotes, validationResult);
+        }
+
+        [Fact]
+        public void ShouldValidatePhoneNumber()
+        {
+            Customer customer = new Customer();
+            customer.PhoneNumber = "123456789111";
 
             var validationResult = CustomerValidator.Validate(customer);
             string errorMessageForPhoneNumber = "Invalid customer property: PhoneNumber";
 
             Assert.NotEmpty(validationResult);
-            Assert.DoesNotContain<string>(errorMessageForPhoneNumber,validationResult);
-
-            customer.PhoneNumber="a1230914234";
-
-            validationResult = CustomerValidator.Validate(customer);
-
-            Assert.Contains(errorMessageForPhoneNumber,validationResult);
-
-            customer.PhoneNumber="1230914234124124124";
-
-            validationResult = CustomerValidator.Validate(customer);
-
-            Assert.Contains(errorMessageForPhoneNumber,validationResult);
+            Assert.DoesNotContain<string>(errorMessageForPhoneNumber, validationResult);
         }
 
         [Fact]
-        public void SouldValidateTotalPurchasesAmount()
+        public void ShouldValidateWrongPhoneNumber()
         {
             Customer customer = new Customer();
-            customer.TotalPurchasesAmount=10492194;
+            customer.PhoneNumber = "a1230914234";
+
+            var validationResult = CustomerValidator.Validate(customer);
+            string errorMessageForPhoneNumber = "Invalid customer property: PhoneNumber";
+
+            Assert.Contains(errorMessageForPhoneNumber, validationResult);
+        }
+
+        [Fact]
+        public void ShouldValidateTooLongPhoneNumber()
+        {
+            Customer customer = new Customer();
+            customer.PhoneNumber = (new Faker()).Random.String(16, '0', '9');
+
+            var validationResult = CustomerValidator.Validate(customer);
+            string errorMessageForPhoneNumber = "Invalid customer property: PhoneNumber";
+
+            Assert.Contains(errorMessageForPhoneNumber, validationResult);
+        }
+
+        [Fact]
+        public void ShouldValidateTotalPurchasesAmount()
+        {
+            Customer customer = new Customer();
+            customer.TotalPurchasesAmount = 10492194;
 
             var validationResult = CustomerValidator.Validate(customer);
             string errorMessageForTotalPurchasesAmount = "Invalid customer property: TotalPurchasesAmount";
 
             Assert.NotEmpty(validationResult);
-            Assert.DoesNotContain<string>(errorMessageForTotalPurchasesAmount,validationResult);
+            Assert.DoesNotContain<string>(errorMessageForTotalPurchasesAmount, validationResult);
         }
 
         [Fact]
-        public void SouldBeAbleToHaveNullValueInTotalPurchsesAmount()
+        public void ShouldBeAbleToHaveNullValueInTotalPurchsesAmount()
         {
             Customer customer = new Customer();
 
@@ -166,7 +219,7 @@ namespace Customer.Test
             string errorMessageForInvalidTotalPurchaseAmount = "Invalid customer property: TotalPurchasesAmount";
 
             Assert.NotEmpty(validationResult);
-            Assert.DoesNotContain<string>(errorMessageForInvalidTotalPurchaseAmount,validationResult);
+            Assert.DoesNotContain<string>(errorMessageForInvalidTotalPurchaseAmount, validationResult);
         }
 
         [Fact]
@@ -182,8 +235,8 @@ namespace Customer.Test
             var longString = longStringBuilder.ToString();
 
 
-            customer.FirstName=longString;
-            customer.LastName=longString;
+            customer.FirstName = longString;
+            customer.LastName = longString;
             customer.Addresses.Clear();
             customer.Email = "invalid-email";
             customer.Notes.Clear();
@@ -203,7 +256,7 @@ namespace Customer.Test
                 "Invalid customer property: TotalPurchasesAmount"
             };
 
-            Assert.Equal(expectedValidationResult,validationResult);
+            Assert.Equal(expectedValidationResult, validationResult);
         }
 
         [Fact]
@@ -219,8 +272,8 @@ namespace Customer.Test
             var longString = longStringBuilder.ToString();
 
 
-            customer.FirstName="Name";
-            customer.LastName="Name";
+            customer.FirstName = "Name";
+            customer.LastName = "Name";
             customer.Addresses.Add(new Address());
             customer.Email = "valid-email@gmail.com";
             customer.Notes.Add("new note");

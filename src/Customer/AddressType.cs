@@ -2,8 +2,8 @@
 {
     public enum AddressType
     {
+        Unknown,
         Shipping,
-        Billing,
-        Unknown
+        Billing
     }
 }
