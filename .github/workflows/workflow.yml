@@ -33,4 +33,4 @@ jobs:
         # Artifact name
         name: # optional
         # Destination path
-       path: # optional
+        path: # optional
