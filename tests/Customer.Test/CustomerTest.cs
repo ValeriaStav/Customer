@@ -1,5 +1,6 @@
 using System.Text;
 using Bogus;
+using Xunit;
 
 namespace Customer.Test
 {
