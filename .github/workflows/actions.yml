@@ -2,9 +2,9 @@ name: .Net 6 CI Build
 
 on:
   push:
-    branches: [ master ]
+    branches: [ FluentValidation ]
   pull_request:
-    branches: [ master ]
+    branches: [ FluentValidation ]
 
 jobs:
   build:
